@@ -1,7 +1,7 @@
 "use client";
 import * as z from "zod";
 import axios from "axios";
-import { Music } from "lucide-react";
+import {VideoIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,12 +19,11 @@ import { Loader } from "@/components/loader";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ChatCompletion, ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 import { formSchema } from "./constants";
-    const MusicPage = () => {
+    const VideoPage = () => {
         const router = useRouter();
-        const [music, setMusic] = useState<String>();
+        const [video, setVideo] = useState<String>();
       
         const form = useForm<z.infer<typeof formSchema>>({
           resolver: zodResolver(formSchema),
@@ -37,10 +36,10 @@ import { formSchema } from "./constants";
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-           setMusic(undefined);
+           setVideo(undefined);
     
-            const response = await axios.post("/api/music", values)
-            setMusic(response.data.audio);
+            const response = await axios.post("/api/video", values)
+            setVideo(response.data[0]);
             form.reset();
 
         } catch (error: any) {
@@ -55,11 +54,11 @@ import { formSchema } from "./constants";
     return (
         <div>
             <Heading
-                title="Music Generation"
-                description="Turn your prompt in to music."
-                icon={Music}
-                iconColor="text-emerald-500"
-                bgColor="bg-emerald-500/10"
+                title="Video Generation"
+                description="Turn your prompt in to video."
+                icon={VideoIcon}
+                iconColor="text-orange-700"
+                bgColor="bg-orange-700/10"
             />
             <br />
             <div className="px-4 lg:px-8">
@@ -88,7 +87,7 @@ import { formSchema } from "./constants";
                                             <Input
                                                 className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                                                 disabled={isLoading}
-                                                placeholder="Message NextAI..."
+                                                placeholder="clown fish swimming around a coral reef"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -104,13 +103,13 @@ import { formSchema } from "./constants";
                     {isLoading  && (<div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
                         <Loader />
                     </div>)}
-                    {!music && !isLoading && (
-                        <Empty label="No Music Generated" />
+                    {!video && !isLoading && (
+                        <Empty label="No video Generated" />
                     )}
-                   {music && (
-                   <audio controls className="w-full mt-8">
-                    <source src={music} type="audio/mpeg"/>
-                   </audio>
+                   {video && (
+                   <video className="w-full aspect-video mt-8 rounded-lg border bg-black" controls>
+                    <source src={video} />
+                   </video>
                 )}
                     </div>
                 </div>
@@ -119,5 +118,5 @@ import { formSchema } from "./constants";
     );
 }
 
-export default MusicPage;
+export default VideoPage;
 
